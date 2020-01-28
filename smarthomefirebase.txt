@@ -1,0 +1,30 @@
+package id.web.ariefatkhur.smarthome
+
+import android.content.Intent
+import android.util.Log
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.google.firebase.messaging.FirebaseMessagingService
+import com.google.firebase.messaging.RemoteMessage
+
+
+class SmarthomeFirebaseService : FirebaseMessagingService() {
+    private var broadcaster: LocalBroadcastManager? = null
+
+    override fun onCreate() {
+        super.onCreate()
+        broadcaster = LocalBroadcastManager.getInstance(this)
+    }
+// menangkap pesan dari fcm
+    override fun onMessageReceived(p0: RemoteMessage?) {
+        val intent = Intent("MyData") // nyimpan data dari fcm intent
+        intent.putExtra("action", p0?.data?.get("action"))
+        intent.putExtra("index", p0?.data?.get("index"))
+        intent.putExtra("data", p0?.data?.get("data"))
+        intent.putExtra("status", p0?.data?.get("status"))
+        broadcaster!!.sendBroadcast(intent) //di broadcast
+    }
+
+    override fun onNewToken(p0: String?) {
+        Log.d("New Token", p0)
+    }
+}
